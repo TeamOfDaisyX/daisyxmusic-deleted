@@ -28,7 +28,7 @@ from DaisyXMusic.services.callsmusic import callsmusic
 
 
 
-@Client.on_message(command("channelpause") & other_filters)
+@Client.on_message(command(["channelpause","cpause"]) & other_filters)
 @errors
 @authorized_users_only
 async def pause(_, message: Message):
@@ -49,7 +49,7 @@ async def pause(_, message: Message):
         await message.reply_text("▶️ Paused!")
 
 
-@Client.on_message(command("channelresume") & other_filters)
+@Client.on_message(command(["channelresume","cresume"]) & other_filters)
 @errors
 @authorized_users_only
 async def resume(_, message: Message):
@@ -70,7 +70,7 @@ async def resume(_, message: Message):
         await message.reply_text("⏸ Resumed!")
 
 
-@Client.on_message(command("channelend") & other_filters)
+@Client.on_message(command(["channelend","cend"]) & other_filters)
 @errors
 @authorized_users_only
 async def stop(_, message: Message):
@@ -94,7 +94,7 @@ async def stop(_, message: Message):
         await message.reply_text("❌ Stopped streaming!")
 
 
-@Client.on_message(command("channelskip") & other_filters)
+@Client.on_message(command(["channelskip","cskip"]) & other_filters)
 @errors
 @authorized_users_only
 async def skip(_, message: Message):
