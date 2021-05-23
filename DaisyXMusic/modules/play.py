@@ -1,6 +1,6 @@
 # Daisyxmusic (Telegram bot project)
 # Copyright (C) 2021  Inukaasith
-
+# Copyright (C) 2021  TheHamkerCat (Python_ARQ)
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@
 
 import json
 import os
+from os import path
 from typing import Callable
 
 import aiofiles
@@ -26,6 +27,7 @@ import requests
 import wget
 from PIL import Image, ImageDraw, ImageFont
 from pyrogram import Client, filters
+from pyrogram.types import Voice
 from pyrogram.errors import UserAlreadyParticipant
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from Python_ARQ import ARQ
@@ -39,6 +41,8 @@ from DaisyXMusic.config import que
 from DaisyXMusic.function.admins import admins as a
 from DaisyXMusic.helpers.admins import get_administrators
 from DaisyXMusic.helpers.channelmusic import get_chat_id
+from DaisyXMusic.helpers.errors import DurationLimitError
+from DaisyXMusic.helpers.decorators import errors
 from DaisyXMusic.helpers.decorators import authorized_users_only
 from DaisyXMusic.helpers.filters import command, other_filters
 from DaisyXMusic.helpers.gets import get_file_name
@@ -636,12 +640,16 @@ async def deezer(client: Client, message_: Message):
     res = lel
     await res.edit(f"Searching 👀👀👀 for `{queryy}` on deezer")
     try:
-        r = await arq.deezer(query=queryy, limit=1)
-        title = r[0]["title"]
-        duration = int(r[0]["duration"])
-        thumbnail = r[0]["thumbnail"]
-        artist = r[0]["artist"]
-        url = r[0]["url"]
+        songs = await arq.deezer(query=queryy, limit=1)
+        if not songs.ok:
+            await message_.reply_text(songs.result)
+            return
+        title = songs.result[0].title
+        url = songs.result[0].url
+        artist = songs.result[0].artist
+        duration = int(songs.result[0].duration)
+        thumbnail = songs.result[0].thumbnail
+
     except:
         await res.edit("Found Literally Nothing, You Should Work On Your English!")
         return
@@ -759,16 +767,15 @@ async def jiosaavn(client: Client, message_: Message):
     res = lel
     await res.edit(f"Searching 👀👀👀 for `{query}` on jio saavn")
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://jiosaavnapi.bhadoo.uk/result/?query={query}"
-            ) as resp:
-                r = json.loads(await resp.text())
-        sname = r[0]["song"]
-        slink = r[0]["media_url"]
-        ssingers = r[0]["singers"]
-        sthumb = r[0]["image"]
-        sduration = int(r[0]["duration"])
+        songs = await arq.saavn(query)
+        if not songs.ok:
+            await message_.reply_text(songs.result)
+            return
+        sname = songs.result[0].song
+        slink = songs.result[0].media_url
+        ssingers = songs.result[0].singers
+        sthumb = songs.result[0].image
+        sduration = int(songs.result[0].duration)
     except Exception as e:
         await res.edit("Found Literally Nothing!, You Should Work On Your English.")
         print(str(e))
