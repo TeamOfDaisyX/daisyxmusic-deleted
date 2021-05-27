@@ -457,6 +457,7 @@ async def play(_, message: Message):
             f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually</i>"
         )
         return
+    text_links = None
     message.from_user.id
     message.from_user.first_name
     await lel.edit("🔎 **Finding**")
