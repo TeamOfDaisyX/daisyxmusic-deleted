@@ -711,10 +711,10 @@ async def play(_, message: Message):
 @Client.on_message(filters.command("dplay") & filters.group & ~filters.edited)
 async def deezer(client: Client, message_: Message):
     if not await is_music_on(message_.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
         await asyncio.sleep(6)
         await hii.delete()
-        return 
+        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
@@ -846,7 +846,7 @@ async def deezer(client: Client, message_: Message):
 @Client.on_message(filters.command("splay") & filters.group & ~filters.edited)
 async def jiosaavn(client: Client, message_: Message):
     if not await is_music_on(message_.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
         await asyncio.sleep(6)
         await hii.delete()
         return  
