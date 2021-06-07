@@ -13,19 +13,19 @@ musicdb = db.musicdb
 async def is_music_on(chat_id: int) -> bool:
     chat = await musicdb.find_one({"chat_id": chat_id})
     if not chat:
-        return True
-    return False
+        return False
+    return True
 
 
 async def music_on(chat_id: int):
     is_music = await is_music_on(chat_id)
     if is_music:
         return
-    return await musicdb.delete_one({"chat_id": chat_id})
+    return await musicdb.insert_one({"chat_id": chat_id})
 
 
 async def music_off(chat_id: int):
     is_music = await is_music_on(chat_id)
     if not is_music:
         return
-    return await musicdb.insert_one({"chat_id": chat_id})
+    return await musicdb.delete_one({"chat_id": chat_id})
