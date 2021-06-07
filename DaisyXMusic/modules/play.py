@@ -245,7 +245,12 @@ def r_ply(type_):
 @Client.on_message(filters.command("current") & filters.group & ~filters.edited)
 async def ee(client, message):
     if not await is_music_on(message.chat.id):
-        return      
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return 
     queue = que.get(message.chat.id)
     stats = updated_stats(message.chat, queue)
     if stats:
@@ -257,6 +262,13 @@ async def ee(client, message):
 @Client.on_message(filters.command("player") & filters.group & ~filters.edited)
 @authorized_users_only
 async def settings(client, message):
+    if not await is_music_on(message.chat.id):
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return     
     playing = None
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
