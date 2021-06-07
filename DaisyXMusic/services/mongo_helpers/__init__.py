@@ -2,7 +2,7 @@
 
 from motor.motor_asyncio import AsyncIOMotorClient as MongoClient
 
-from DaisyX.config import MONGO_URI
+from DaisyXMusic.config import MONGO_URI
 from typing import Dict, List, Union
 
 mongo_client = MongoClient(MONGO_URI)
