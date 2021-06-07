@@ -743,7 +743,7 @@ async def deezer(client: Client, message_: Message):
 
 @Client.on_message(filters.command(["channelsplay","csplay"]) & filters.group & ~filters.edited)
 @authorized_users_only
-async def jiosaavn(client: Client, message_: Message):0
+async def jiosaavn(client: Client, message_: Message):
     if not await is_music_on(message.chat.id):
         return      
     global que
