@@ -177,7 +177,10 @@ async def hfmm(_, message):
 @Client.on_message(filters.command("playlist") & filters.group & ~filters.edited)
 async def playlist(client, message):
     if not await is_music_on(message.chat.id):
-        return      
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return       
     global que
     queue = que.get(message.chat.id)
     if not queue:
@@ -263,12 +266,10 @@ async def ee(client, message):
 @authorized_users_only
 async def settings(client, message):
     if not await is_music_on(message.chat.id):
-        for administrator in administrators:
-            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-            await asyncio.sleep(6)
-            await hii.delete()
-            return
-        return     
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return   
     playing = None
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
@@ -709,13 +710,11 @@ async def play(_, message: Message):
 
 @Client.on_message(filters.command("dplay") & filters.group & ~filters.edited)
 async def deezer(client: Client, message_: Message):
-    if not await is_music_on(message.chat.id):
-        for administrator in administrators:
-            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-            await asyncio.sleep(6)
-            await hii.delete()
-            return
-        return
+    if not await is_music_on(message_.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return 
     global que
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
@@ -846,12 +845,10 @@ async def deezer(client: Client, message_: Message):
 
 @Client.on_message(filters.command("splay") & filters.group & ~filters.edited)
 async def jiosaavn(client: Client, message_: Message):
-    if not await is_music_on(message.chat.id):
-        for administrator in administrators:
-            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-            await asyncio.sleep(6)
-            await hii.delete()
-            return
+    if not await is_music_on(message_.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
         return  
     global que
     lel = await message_.reply("🔄 **Processing**")
