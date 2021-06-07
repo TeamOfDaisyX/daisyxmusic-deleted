@@ -19,7 +19,7 @@ import json
 import os
 from os import path
 from typing import Callable
-
+import asyncio
 import aiofiles
 import aiohttp
 import ffmpeg
@@ -62,6 +62,13 @@ chat_id = None
 
 @Client.on_message(filters.command(["channelplaylist","cplaylist"]) & filters.group & ~filters.edited)
 async def playlist(client, message):
+    if not await is_music_on(message.chat.id):
+    for administrator in administrators:
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return
+    return
     try:
       lel = await client.get_chat(message.chat.id)
       lol = lel.linked_chat.id
@@ -153,7 +160,12 @@ async def ee(client, message):
 @authorized_users_only
 async def settings(client, message):
     if not await is_music_on(message.chat.id):
-        return    
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return  
     playing = None
     try:
       lel = await client.get_chat(message.chat.id)
@@ -364,7 +376,12 @@ async def m_cb(b, cb):
 @authorized_users_only
 async def play(_, message: Message):
     if not await is_music_on(message.chat.id):
-        return      
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return    
     global que
     lel = await message.reply("🔄 **Processing**")
 
@@ -611,7 +628,12 @@ async def play(_, message: Message):
 @authorized_users_only
 async def deezer(client: Client, message_: Message):
     if not await is_music_on(message.chat.id):
-        return      
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return   
     global que
     lel = await message_.reply("🔄 **Processing**")
 
@@ -745,7 +767,12 @@ async def deezer(client: Client, message_: Message):
 @authorized_users_only
 async def jiosaavn(client: Client, message_: Message):
     if not await is_music_on(message.chat.id):
-        return      
+        for administrator in administrators:
+            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+            await asyncio.sleep(6)
+            await hii.delete()
+            return
+        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
     try:
