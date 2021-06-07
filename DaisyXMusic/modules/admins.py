@@ -19,13 +19,13 @@ from asyncio.queues import QueueEmpty
 from DaisyXMusic.config import que
 from pyrogram import Client, filters
 from pyrogram.types import Message
-
+import asyncio
 from DaisyXMusic.function.admins import set
 from DaisyXMusic.helpers.channelmusic import get_chat_id
 from DaisyXMusic.helpers.decorators import authorized_users_only, errors
 from DaisyXMusic.helpers.filters import command, other_filters
 from DaisyXMusic.services.callsmusic import callsmusic
-
+from DaisyXMusic.services.mongo_helpers import is_music_on
 
 @Client.on_message(filters.command("adminreset"))
 async def update_admin(client, message: Message):
@@ -37,13 +37,18 @@ async def update_admin(client, message: Message):
             for member in await message.chat.get_members(filter="administrators")
         ],
     )
-    await message.reply_text("❇️ Admin cache refreshed!")
+
 
 
 @Client.on_message(command("pause") & other_filters)
 @errors
 @authorized_users_only
 async def pause(_, message: Message):
+    if not await is_music_on(message.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return  
     chat_id = get_chat_id(message.chat)
     if (chat_id not in callsmusic.pytgcalls.active_calls) or (
         callsmusic.pytgcalls.active_calls[chat_id] == "paused"
@@ -58,6 +63,11 @@ async def pause(_, message: Message):
 @errors
 @authorized_users_only
 async def resume(_, message: Message):
+    if not await is_music_on(message.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return      
     chat_id = get_chat_id(message.chat)
     if (chat_id not in callsmusic.pytgcalls.active_calls) or (
         callsmusic.pytgcalls.active_calls[chat_id] == "playing"
@@ -72,6 +82,11 @@ async def resume(_, message: Message):
 @errors
 @authorized_users_only
 async def stop(_, message: Message):
+    if not await is_music_on(message.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return      
     chat_id = get_chat_id(message.chat)
     if chat_id not in callsmusic.pytgcalls.active_calls:
         await message.reply_text("❗ Nothing is streaming!")
@@ -89,6 +104,11 @@ async def stop(_, message: Message):
 @errors
 @authorized_users_only
 async def skip(_, message: Message):
+    if not await is_music_on(message.chat.id):
+        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+        await asyncio.sleep(6)
+        await hii.delete()
+        return      
     global que
     chat_id = get_chat_id(message.chat)
     if chat_id not in callsmusic.pytgcalls.active_calls:
