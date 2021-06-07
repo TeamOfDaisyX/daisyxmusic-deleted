@@ -161,7 +161,7 @@ async def hfmm(_, message):
         )
 
     elif status == "OFF" or status == "off" or status == "Off":
-        lel = await message.reply(message, "`Processing...`")
+        lel = await message.reply("`Processing...`")
         Escobar = music_off(int(message.chat.id))
         if not Escobar:
             await lel.edit("Music Player Was Not Activated In This Chat")
