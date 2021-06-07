@@ -456,6 +456,8 @@ async def play(_, message: Message):
         await lel.edit(
             f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually</i>"
         )
+        await asyncio.sleep(2)
+        await lel.delete()
         return
     text_links = None
     message.from_user.id
@@ -694,6 +696,8 @@ async def deezer(client: Client, message_: Message):
         await lel.edit(
             f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually</i>"
         )
+        await asyncio.sleep(2)
+        await lel.delete()
         return
     requested_by = message_.from_user.first_name
 
@@ -822,6 +826,8 @@ async def jiosaavn(client: Client, message_: Message):
         await lel.edit(
             "<i> helper Userbot not in this chat, Ask admin to send /play command for first time or add assistant manually</i>"
         )
+        await asyncio.sleep(2)
+        await lel.delete()        
         return
     requested_by = message_.from_user.first_name
     chat_id = message_.chat.id
