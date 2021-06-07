@@ -621,11 +621,11 @@ async def play(_, message: Message):
 @Client.on_message(filters.command(["channeldplay","cdplay"]) & filters.group & ~filters.edited)
 @authorized_users_only
 async def deezer(client: Client, message_: Message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+    if not await is_music_on(message_.chat.id):
+        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
         await asyncio.sleep(6)
         await hii.delete()
-        return    
+        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
 
@@ -758,11 +758,11 @@ async def deezer(client: Client, message_: Message):
 @Client.on_message(filters.command(["channelsplay","csplay"]) & filters.group & ~filters.edited)
 @authorized_users_only
 async def jiosaavn(client: Client, message_: Message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
+    if not await is_music_on(message_.chat.id):
+        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
         await asyncio.sleep(6)
         await hii.delete()
-        return  
+        return   
     global que
     lel = await message_.reply("🔄 **Processing**")
     try:
