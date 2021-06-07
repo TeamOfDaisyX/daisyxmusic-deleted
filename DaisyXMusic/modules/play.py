@@ -50,10 +50,11 @@ from DaisyXMusic.services.callsmusic import callsmusic, queues
 from DaisyXMusic.services.callsmusic.callsmusic import client as USER
 from DaisyXMusic.services.converter.converter import convert
 from DaisyXMusic.services.downloaders import youtube
-from DaisyXMusic.services.mongo_helpers import is_music_on
+from DaisyXMusic.services.mongo_helpers import is_music_on,music_on,music_off
 aiohttpsession = aiohttp.ClientSession()
 chat_id = None
 arq = ARQ("https://thearq.tech", ARQ_API_KEY, aiohttpsession)
+
 
 
 def cb_admin_check(func: Callable) -> Callable:
@@ -132,8 +133,51 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
     os.remove("background.png")
 
 
+@Client.on_message(
+    filters.command("musicplayer") & ~filters.edited & ~filters.bot & ~filters.private
+)
+@authorized_users_only
+async def hfmm(_, message):
+    global daisy_chats
+    try:
+        user_id = message.from_user.id
+    except:
+        return
+    if len(message.command) != 2:
+        await message.reply_text(
+            "I only recognize `/musicplayer on` and /musicplayer `off only`"
+        )
+        return
+    status = message.text.split(None, 1)[1]
+    message.chat.id
+    if status == "ON" or status == "on" or status == "On":
+        lel = await edit_or_reply(message, "`Processing...`")
+        lol = music_on(int(message.chat.id))
+        if not lol:
+            await lel.edit("Music Player Already Activated In This Chat")
+            return
+        await lel.edit(
+            f"Music Player Successfully Enabled For Users In The Chat {message.chat.id}"
+        )
+
+    elif status == "OFF" or status == "off" or status == "Off":
+        lel = await edit_or_reply(message, "`Processing...`")
+        Escobar = music_off(int(message.chat.id))
+        if not Escobar:
+            await lel.edit("Music Player Was Not Activated In This Chat")
+            return
+        await lel.edit(
+            f"Music Player Successfully Deactivated For Users In The Chat {message.chat.id}"
+        )
+    else:
+        await message.reply_text(
+            "I only recognize `/musicplayer on` and /musicplayer `off only`"
+        )    
+
 @Client.on_message(filters.command("playlist") & filters.group & ~filters.edited)
 async def playlist(client, message):
+    if not await is_music_on(message.chat.id):
+        return      
     global que
     queue = que.get(message.chat.id)
     if not queue:
@@ -200,6 +244,8 @@ def r_ply(type_):
 
 @Client.on_message(filters.command("current") & filters.group & ~filters.edited)
 async def ee(client, message):
+    if not await is_music_on(message.chat.id):
+        return      
     queue = que.get(message.chat.id)
     stats = updated_stats(message.chat, queue)
     if stats:
