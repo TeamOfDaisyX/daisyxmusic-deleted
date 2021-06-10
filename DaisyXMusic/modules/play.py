@@ -914,7 +914,7 @@ async def lol_cb(b, cb):
         return
     await cb.message.edit("Hang On... Player Starting")
     x=int(x)
-    user_name = cb.message.reply_to_message.from_user.first_name
+    useer_name = cb.message.reply_to_message.from_user.first_name
     
     results = YoutubeSearch(query, max_results=5).to_dict()
     resultss=results[x]["url_suffix"]
