@@ -35,8 +35,9 @@ async def bye(client, message):
                 await client.send_message(dialog.chat.id, msg)
                 sent = sent+1
                 await lol.edit(f"Gcasting.. Sent: {sent} chats. Failed: {failed} chats.")
+                await asyncio.sleep(0.7)
             except:
                 failed=failed+1
                 await lol.edit(f"Gcasting.. Sent: {sent} chats. Failed: {failed} chats.")
-            await asyncio.sleep(0.7)
+            
         await message.reply_text(f"Gcasted message to {sent} chats. Failed {failed} chats.")
