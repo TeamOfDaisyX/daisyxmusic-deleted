@@ -1,6 +1,6 @@
 
 
-<h1 align="centre">DAISYXMUSIC V4.2 🎵</h1>
+<h1 align="centre">DAISYXMUSIC V4.5 🎵</h1>
 
 ### A bot that can play music on Telegram Group and Channel Voice Chats
 #### POWERED BY [PYTGCALLS](https://github.com/pytgcalls/pytgcalls)
@@ -54,6 +54,7 @@ $ python(3) -m DaisyXMusic
 - `/play <reply to audio>` - play replied file
 - `/dplay <song name>` - play song you requested via deezer
 - `/splay <song name>` - play song you requested via jio saavn
+- `/ytplay <song name>`: Directly play song via Youtube Music
 - `/playlist` - Show now playing list
 - `/current` - Show now playing
 - `/song <song name>` - download songs you want quickly
@@ -119,6 +120,7 @@ DaisyXmusic is a modified version of [Callsmusic](https://github.com/callsmusic/
 - [InukaASiTH](https://github.com/InukaAsith): Dev
 - [Rojserbest](http://github.com/rojserbes): Dev
 - [Wrench](https://github.com/EverythingSuckz/): Dev
+- [Bemro](https://github.com/bemroofficial): Dev
 - [QueenArzoo](https://github.com/QueenArzoo): Dev
 - [lucifeermorningstar](https://github.com/lucifeermorningstar): Dev
 - [AuraXNetwork](https://github.com/AuraXNetwork/AuraXMusicBot)
