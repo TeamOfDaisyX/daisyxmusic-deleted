@@ -77,7 +77,7 @@ async def bye(client, message):
         left=0
         failed=0
         lol = await message.reply("Assistant Leaving all chats")
-        for dialog in USER.iter_dialogs():
+        async for dialog in USER.iter_dialogs():
             try:
                 await USER.leave_chat(dialog.chat.id)
                 left = left+1
