@@ -576,12 +576,12 @@ async def play(_, message: Message):
             [
                 [
                     InlineKeyboardButton("1️⃣", callback_data=f'playlol {results[0]["url_suffix"]}|{results[0]["title"][:40]}|{results[0]["thumbnails"][0]}|{results[0]["duration"]}|{results[0]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("2️⃣", callback_data=f'playlol {results[1]["url_suffix"]}|{results[1]["title"][:40]}|{results[1]["thumbnails"][1]}|{results[1]["duration"]}|{results[1]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("3️⃣", callback_data=f'playlol {results[2]["url_suffix"]}|{results[2]["title"][:40]}|{results[2]["thumbnails"][2]}|{results[2]["duration"]}|{results[2]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("2️⃣", callback_data=f'playlol {results[1]["url_suffix"]}|{results[1]["title"][:40]}|{results[1]["thumbnails"][0]}|{results[1]["duration"]}|{results[1]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("3️⃣", callback_data=f'playlol {results[2]["url_suffix"]}|{results[2]["title"][:40]}|{results[2]["thumbnails"][0]}|{results[2]["duration"]}|{results[2]["views"]}|{user_id}|{user_name}'),
                 ],
                 [
-                    InlineKeyboardButton("4️⃣", callback_data=f'playlol {results[3]["url_suffix"]}|{results[3]["title"][:40]}|{results[3]["thumbnails"][3]}|{results[3]["duration"]}|{results[3]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("5️⃣", callback_data=f'playlol {results[4]["url_suffix"]}|{results[4]["title"][:40]}|{results[4]["thumbnails"][4]}|{results[4]["duration"]}|{results[4]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("4️⃣", callback_data=f'playlol {results[3]["url_suffix"]}|{results[3]["title"][:40]}|{results[3]["thumbnails"][0]}|{results[3]["duration"]}|{results[3]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("5️⃣", callback_data=f'playlol {results[4]["url_suffix"]}|{results[4]["title"][:40]}|{results[4]["thumbnails"][0]}|{results[4]["duration"]}|{results[4]["views"]}|{user_id}|{user_name}'),
                 ],
                 [InlineKeyboardButton(text="❌", callback_data="cls")],
             ]
