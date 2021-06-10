@@ -19,7 +19,7 @@ import json
 import os
 from os import path
 from typing import Callable
-import asyncio
+
 import aiofiles
 import aiohttp
 import ffmpeg
@@ -50,11 +50,10 @@ from DaisyXMusic.services.callsmusic import callsmusic, queues
 from DaisyXMusic.services.callsmusic.callsmusic import client as USER
 from DaisyXMusic.services.converter.converter import convert
 from DaisyXMusic.services.downloaders import youtube
-from DaisyXMusic.services.mongo_helpers import is_music_on,music_on,music_off
+
 aiohttpsession = aiohttp.ClientSession()
 chat_id = None
 arq = ARQ("https://thearq.tech", ARQ_API_KEY, aiohttpsession)
-
 
 
 def cb_admin_check(func: Callable) -> Callable:
@@ -133,54 +132,8 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
     os.remove("background.png")
 
 
-@Client.on_message(
-    filters.command("musicplayer") & ~filters.edited & ~filters.bot & ~filters.private
-)
-@authorized_users_only
-async def hfmm(_, message):
-    global daisy_chats
-    try:
-        user_id = message.from_user.id
-    except:
-        return
-    if len(message.command) != 2:
-        await message.reply_text(
-            "I only recognize `/musicplayer on` and /musicplayer `off only`"
-        )
-        return
-    status = message.text.split(None, 1)[1]
-    message.chat.id
-    if status == "ON" or status == "on" or status == "On":
-        lel = await message.reply("`Processing...`")
-        lol = music_on(int(message.chat.id))
-        if not lol:
-            await lel.edit("Music Player Already Activated In This Chat")
-            return
-        await lel.edit(
-            f"Music Player Successfully Enabled For Users In The Chat {message.chat.id}"
-        )
-
-    elif status == "OFF" or status == "off" or status == "Off":
-        lel = await message.reply("`Processing...`")
-        Escobar = music_off(int(message.chat.id))
-        if not Escobar:
-            await lel.edit("Music Player Was Not Activated In This Chat")
-            return
-        await lel.edit(
-            f"Music Player Successfully Deactivated For Users In The Chat {message.chat.id}"
-        )
-    else:
-        await message.reply_text(
-            "I only recognize `/musicplayer on` and /musicplayer `off only`"
-        )    
-
 @Client.on_message(filters.command("playlist") & filters.group & ~filters.edited)
 async def playlist(client, message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return       
     global que
     queue = que.get(message.chat.id)
     if not queue:
@@ -247,13 +200,6 @@ def r_ply(type_):
 
 @Client.on_message(filters.command("current") & filters.group & ~filters.edited)
 async def ee(client, message):
-    if not await is_music_on(message.chat.id):
-        for administrator in administrators:
-            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-            await asyncio.sleep(6)
-            await hii.delete()
-            return
-        return 
     queue = que.get(message.chat.id)
     stats = updated_stats(message.chat, queue)
     if stats:
@@ -265,11 +211,6 @@ async def ee(client, message):
 @Client.on_message(filters.command("player") & filters.group & ~filters.edited)
 @authorized_users_only
 async def settings(client, message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return   
     playing = None
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
@@ -462,16 +403,8 @@ async def m_cb(b, cb):
 @Client.on_message(command("play") & other_filters)
 async def play(_, message: Message):
     global que
-    administrators = await get_administrators(message.chat)
-    if not await is_music_on(message.chat.id):
-        for administrator in administrators:
-            hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-            await asyncio.sleep(6)
-            await hii.delete()
-            return
-        return
     lel = await message.reply("🔄 **Processing**")
-
+    administrators = await get_administrators(message.chat)
     chid = message.chat.id
 
     try:
@@ -521,14 +454,12 @@ async def play(_, message: Message):
         # lmoa = await client.get_chat_member(chid,wew)
     except:
         await lel.edit(
-            f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually\n\n send /musicplayer off to diable music</i>"
+            f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually</i>"
         )
-        await asyncio.sleep(2)
-        await lel.delete()
         return
-    text_links = None
     message.from_user.id
     message.from_user.first_name
+    text_links=None
     await lel.edit("🔎 **Finding**")
     message.from_user.id
     if message.reply_to_message:
@@ -630,43 +561,35 @@ async def play(_, message: Message):
         print(query)
         await lel.edit("🎵 **Processing**")
         ydl_opts = {"format": "bestaudio[ext=m4a]"}
-        try:
-            results = YoutubeSearch(query, max_results=1).to_dict()
-            url = f"https://youtube.com{results[0]['url_suffix']}"
-            # print(results)
-            title = results[0]["title"][:40]
-            thumbnail = results[0]["thumbnails"][0]
-            thumb_name = f"thumb{title}.jpg"
-            thumb = requests.get(thumbnail, allow_redirects=True)
-            open(thumb_name, "wb").write(thumb.content)
-            duration = results[0]["duration"]
-            results[0]["url_suffix"]
-            views = results[0]["views"]
-
-        except Exception as e:
-            await lel.edit(
-                "Song not found.Try another song or maybe spell it properly."
-            )
-            print(str(e))
-            return
-        dlurl=url
-        dlurl=dlurl.replace("youtube","youtubepp")
-        keyboard = InlineKeyboardMarkup(
+        results = YoutubeSearch(query, max_results=5).to_dict()
+        # Looks like hell. Aren't it?? FUCK OFF
+        toxxt = ""
+        while i < 5:
+            toxxt += f"Title - {results[i]['title']}\n"
+            toxxt += f"Duration - {results[i]['duration']}\n"
+            toxxt += f"Views - {results[i]['views']}\n"
+            toxxt += f"Channel - {results[i]['channel']}\n"
+            toxxt += f"https://youtube.com{results[i]['url_suffix']}\n\n"
+            i += 1            
+        koyboard = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("📖 Playlist", callback_data="playlist"),
-                    InlineKeyboardButton("Menu ⏯ ", callback_data="menu"),
+                    InlineKeyboardButton("1️⃣", callback_data=f'playlol {results[0]["url_suffix"]}|{results[0]["title"][:40]}|{results[0]["thumbnails"][0]}|{results[0]["duration"]}|{results[0]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("2️⃣", callback_data=f'playlol {results[1]["url_suffix"]}|{results[1]["title"][:40]}|{results[1]["thumbnails"][1]}|{results[1]["duration"]}|{results[1]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("3️⃣", callback_data=f'playlol {results[2]["url_suffix"]}|{results[2]["title"][:40]}|{results[2]["thumbnails"][2]}|{results[2]["duration"]}|{results[2]["views"]}|{user_id}|{user_name}'),
                 ],
                 [
-                    InlineKeyboardButton(text="🎬 YouTube", url=f"{url}"),
-                    InlineKeyboardButton(text="Download 📥", url=f"{dlurl}"),
+                    InlineKeyboardButton("4️⃣", callback_data=f'playlol {results[3]["url_suffix"]}|{results[3]["title"][:40]}|{results[3]["thumbnails"][3]}|{results[3]["duration"]}|{results[3]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("5️⃣", callback_data=f'playlol {results[4]["url_suffix"]}|{results[4]["title"][:40]}|{results[4]["thumbnails"][4]}|{results[4]["duration"]}|{results[4]["views"]}|{user_id}|{user_name}'),
                 ],
-                [InlineKeyboardButton(text="❌ Close", callback_data="cls")],
+                [InlineKeyboardButton(text="❌", callback_data="cls")],
             ]
-        )
-        requested_by = message.from_user.first_name
-        await generate_cover(requested_by, title, views, duration, thumbnail)
-        file_path = await convert(youtube.download(url))
+        )       
+        await message.reply_text(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
+        # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
+        return
+        # Returning to pornhub
+
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
         position = await queues.put(chat_id, file=file_path)
@@ -710,11 +633,6 @@ async def play(_, message: Message):
 
 @Client.on_message(filters.command("dplay") & filters.group & ~filters.edited)
 async def deezer(client: Client, message_: Message):
-    if not await is_music_on(message_.chat.id):
-        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
@@ -768,8 +686,6 @@ async def deezer(client: Client, message_: Message):
         await lel.edit(
             f"<i> {user.first_name} Userbot not in this chat, Ask admin to send /play command for first time or add {user.first_name} manually</i>"
         )
-        await asyncio.sleep(2)
-        await lel.delete()
         return
     requested_by = message_.from_user.first_name
 
@@ -845,11 +761,6 @@ async def deezer(client: Client, message_: Message):
 
 @Client.on_message(filters.command("splay") & filters.group & ~filters.edited)
 async def jiosaavn(client: Client, message_: Message):
-    if not await is_music_on(message_.chat.id):
-        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
@@ -903,8 +814,6 @@ async def jiosaavn(client: Client, message_: Message):
         await lel.edit(
             "<i> helper Userbot not in this chat, Ask admin to send /play command for first time or add assistant manually</i>"
         )
-        await asyncio.sleep(2)
-        await lel.delete()        
         return
     requested_by = message_.from_user.first_name
     chat_id = message_.chat.id
@@ -983,5 +892,77 @@ async def jiosaavn(client: Client, message_: Message):
     )
     os.remove("final.png")
 
+
+@Client.on_callback_query(filters.regex(pattern=r"playlol"))
+async def lol_cb(b, cb):
+    global que
+    typed_ = cb.matches[1].group(1)
+    chat_id = cb.message.chat.id
+    try:
+        resultss,title,thumbnail,duration, views, useer_id,useer_name = typed_.split("|")
+    except:
+        await cb.message.edit("Song Not Found")
+        return
+    if cb.from_user.id != useer_id:
+        await cb.answer("You ain't the person who requested to play the song!", show_alert=True)
+        return
+    url = f"https://youtube.com{resultss}"
+    try:
+        thumb_name = f"thumb{title}.jpg"
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        open(thumb_name, "wb").write(thumb.content)
+    except Exception as e:
+        print(e)
+        return
+    dlurl=url
+    dlurl=dlurl.replace("youtube","youtubepp")
+    keyboard = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("📖 Playlist", callback_data="playlist"),
+                InlineKeyboardButton("Menu ⏯ ", callback_data="menu"),
+            ],
+            [
+                InlineKeyboardButton(text="🎬 YouTube", url=f"{url}"),
+                InlineKeyboardButton(text="Download 📥", url=f"{dlurl}"),
+            ],
+            [InlineKeyboardButton(text="❌ Close", callback_data="cls")],
+        ]
+    )
+    requested_by = useer_name
+    await generate_cover(requested_by, title, views, duration, thumbnail)
+    file_path = await convert(youtube.download(url))  
+    if chat_id in callsmusic.pytgcalls.active_calls:
+        position = await queues.put(chat_id, file=file_path)
+        qeue = que.get(chat_id)
+        s_name = title
+        r_by = useer_name
+        loc = file_path
+        appendable = [s_name, r_by, loc]
+        qeue.append(appendable)
+        await cb.message.edit_photo(
+            photo="final.png",
+            caption=f"#⃣ Your requested song **queued** at position {position}!",
+            reply_markup=keyboard,
+        )
+        os.remove("final.png")
+        
+    else:
+        que[chat_id] = []
+        qeue = que.get(chat_id)
+        s_name = title
+        r_by = useer_name
+        loc = file_path
+        appendable = [s_name, r_by, loc]
+        qeue.append(appendable)
+
+        callsmusic.pytgcalls.join_group_call(chat_id, file_path)
+
+        await cb.message.edit_photo(
+            photo="final.png",
+            reply_markup=keyboard,
+            caption=f"▶️ **Playing** here the song requested by {useer_name} via Youtube Music 😜",
+        )
+        os.remove("final.png")
 
 # Have u read all. If read RESPECT :-)
