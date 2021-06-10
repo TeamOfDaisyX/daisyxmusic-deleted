@@ -971,7 +971,7 @@ async def lol_cb(b, cb):
         que[chat_id] = []
         qeue = que.get(chat_id)
         s_name = title
-        r_by = cb.message.from_user
+        r_by = cb.message.reply_to_message.from_user
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
