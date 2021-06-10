@@ -22,6 +22,7 @@
 - Control with buttons
 - Userbot auto join
 - Channel Music Play
+- Keyboard selection support for youtube play
 
 ## 🚀 Deployment
 
