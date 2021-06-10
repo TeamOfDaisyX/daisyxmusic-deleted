@@ -564,13 +564,14 @@ async def play(_, message: Message):
         results = YoutubeSearch(query, max_results=5).to_dict()
         # Looks like hell. Aren't it?? FUCK OFF
         toxxt = ""
-        while i < 5:
+        j = 0
+        while j < 5:
             toxxt += f"Title - {results[i]['title']}\n"
             toxxt += f"Duration - {results[i]['duration']}\n"
             toxxt += f"Views - {results[i]['views']}\n"
             toxxt += f"Channel - {results[i]['channel']}\n"
             toxxt += f"https://youtube.com{results[i]['url_suffix']}\n\n"
-            i += 1            
+            j += 1            
         koyboard = InlineKeyboardMarkup(
             [
                 [
