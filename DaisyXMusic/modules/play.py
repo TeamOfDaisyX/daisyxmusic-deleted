@@ -899,9 +899,10 @@ async def jiosaavn(client: Client, message_: Message):
 @Client.on_callback_query(filters.regex(pattern=r"plll"))
 async def lol_cb(b, cb):
     global que
-    global useer
-    typed_ = cb.matches[1].group(1)
+
+    cbd = cb.data.strip()
     chat_id = cb.message.chat.id
+    typed_=cbd.split(None, 1)[1]
     try:
         x,useer_id,query = typed_.split("|")      
     except:
@@ -912,7 +913,7 @@ async def lol_cb(b, cb):
         return
     await cb.message.edit("Hang On... Player Starting")
     x-int(x)
-    user_name = useer
+    user_name = cb.message.reply_to_message.from_user.first_name
     results = YoutubeSearch(query, max_results=5).to_dict()
     resultss=results[x]["url_suffix"]
     title=results[x]["title"][:40]
@@ -974,7 +975,7 @@ async def lol_cb(b, cb):
         await cb.message.edit_photo(
             photo="final.png",
             reply_markup=keyboard,
-            caption=f"▶️ **Playing** here the song requested by {useer_name} via Youtube Music 😜",
+            caption=f"▶️ **Playing** here the song requested by {cb.message.reply_to_message.from_user.mention} via Youtube Music 😜",
         )
         os.remove("final.png")
 
