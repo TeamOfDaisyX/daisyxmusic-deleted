@@ -55,7 +55,7 @@ aiohttpsession = aiohttp.ClientSession()
 chat_id = None
 arq = ARQ("https://thearq.tech", ARQ_API_KEY, aiohttpsession)
 
-
+useer ="NaN"
 def cb_admin_check(func: Callable) -> Callable:
     async def decorator(client, cb):
         admemes = a.get(cb.message.chat.id)
@@ -403,6 +403,7 @@ async def m_cb(b, cb):
 @Client.on_message(command("play") & other_filters)
 async def play(_, message: Message):
     global que
+    global useer
     lel = await message.reply("🔄 **Processing**")
     administrators = await get_administrators(message.chat)
     chid = message.chat.id
@@ -565,6 +566,7 @@ async def play(_, message: Message):
         # Looks like hell. Aren't it?? FUCK OFF
         toxxt = ""
         j = 0
+        useer=user_name
         while j < 5:
             toxxt += f"Title - {results[j]['title']}\n"
             toxxt += f"Duration - {results[j]['duration']}\n"
@@ -575,13 +577,13 @@ async def play(_, message: Message):
         koyboard = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("1️⃣", callback_data=f'playlol {results[0]["url_suffix"]}|{results[0]["title"][:40]}|{results[0]["thumbnails"][0]}|{results[0]["duration"]}|{results[0]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("2️⃣", callback_data=f'playlol {results[1]["url_suffix"]}|{results[1]["title"][:40]}|{results[1]["thumbnails"][0]}|{results[1]["duration"]}|{results[1]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("3️⃣", callback_data=f'playlol {results[2]["url_suffix"]}|{results[2]["title"][:40]}|{results[2]["thumbnails"][0]}|{results[2]["duration"]}|{results[2]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{user_id}|{query}'),
+                    InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{user_id}|{query}'),
+                    InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{user_id}|{query}'),
                 ],
                 [
-                    InlineKeyboardButton("4️⃣", callback_data=f'playlol {results[3]["url_suffix"]}|{results[3]["title"][:40]}|{results[3]["thumbnails"][0]}|{results[3]["duration"]}|{results[3]["views"]}|{user_id}|{user_name}'),
-                    InlineKeyboardButton("5️⃣", callback_data=f'playlol {results[4]["url_suffix"]}|{results[4]["title"][:40]}|{results[4]["thumbnails"][0]}|{results[4]["duration"]}|{results[4]["views"]}|{user_id}|{user_name}'),
+                    InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{user_id}|{query}'),
+                    InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{user_id}|{query}'),
                 ],
                 [InlineKeyboardButton(text="❌", callback_data="cls")],
             ]
@@ -894,13 +896,14 @@ async def jiosaavn(client: Client, message_: Message):
     os.remove("final.png")
 
 
-@Client.on_callback_query(filters.regex(pattern=r"playlol"))
+@Client.on_callback_query(filters.regex(pattern=r"plll"))
 async def lol_cb(b, cb):
     global que
+    global useer
     typed_ = cb.matches[1].group(1)
     chat_id = cb.message.chat.id
     try:
-        resultss,title,thumbnail,duration, views, useer_id,useer_name = typed_.split("|")
+        x,useer_id,query = typed_.split("|")      
     except:
         await cb.message.edit("Song Not Found")
         return
@@ -908,6 +911,14 @@ async def lol_cb(b, cb):
         await cb.answer("You ain't the person who requested to play the song!", show_alert=True)
         return
     await cb.message.edit("Hang On... Player Starting")
+    x-int(x)
+    user_name = useer
+    results = YoutubeSearch(query, max_results=5).to_dict()
+    resultss=results[x]["url_suffix"]
+    title=results[x]["title"][:40]
+    thumbnail=results[x]["thumbnails"][0]
+    duration=results[x]["duration"]
+    views=results[x]["views"]
     url = f"https://youtube.com{resultss}"
     try:
         thumb_name = f"thumb{title}.jpg"
