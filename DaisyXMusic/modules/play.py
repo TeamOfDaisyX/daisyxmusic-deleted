@@ -566,11 +566,11 @@ async def play(_, message: Message):
         toxxt = ""
         j = 0
         while j < 5:
-            toxxt += f"Title - {results[i]['title']}\n"
-            toxxt += f"Duration - {results[i]['duration']}\n"
-            toxxt += f"Views - {results[i]['views']}\n"
-            toxxt += f"Channel - {results[i]['channel']}\n"
-            toxxt += f"https://youtube.com{results[i]['url_suffix']}\n\n"
+            toxxt += f"Title - {results[j]['title']}\n"
+            toxxt += f"Duration - {results[j]['duration']}\n"
+            toxxt += f"Views - {results[j]['views']}\n"
+            toxxt += f"Channel - {results[j]['channel']}\n"
+            toxxt += f"https://youtube.com{results[j]['url_suffix']}\n\n"
             j += 1            
         koyboard = InlineKeyboardMarkup(
             [
@@ -907,6 +907,7 @@ async def lol_cb(b, cb):
     if cb.from_user.id != useer_id:
         await cb.answer("You ain't the person who requested to play the song!", show_alert=True)
         return
+    await cb.message.edit("Hang On... Player Starting")
     url = f"https://youtube.com{resultss}"
     try:
         thumb_name = f"thumb{title}.jpg"
