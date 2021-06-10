@@ -567,7 +567,7 @@ async def play(_, message: Message):
         except:
           await lel.edit("Give me something to play")
         # Looks like hell. Aren't it?? FUCK OFF
-        toxxt = ""
+        toxxt = "**Select the song you want to play**\n\n"
         j = 0
         useer=user_name
         while j < 5:
