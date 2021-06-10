@@ -588,7 +588,7 @@ async def play(_, message: Message):
                 [InlineKeyboardButton(text="❌", callback_data="cls")],
             ]
         )       
-        await message.reply_text(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
+        await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
         # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
         return
         # Returning to pornhub
@@ -956,7 +956,8 @@ async def lol_cb(b, cb):
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
-        await cb.message.edit_photo(
+        await cb.message.delete()
+        await b.send_photo(chat_id,
             photo="final.png",
             caption=f"#⃣ Your requested song **queued** at position {position}!",
             reply_markup=keyboard,
@@ -973,12 +974,13 @@ async def lol_cb(b, cb):
         qeue.append(appendable)
 
         callsmusic.pytgcalls.join_group_call(chat_id, file_path)
-
-        await cb.message.edit_photo(
+        await cb.message.delete()
+        await b.send_photo(chat_id,
             photo="final.png",
             reply_markup=keyboard,
             caption=f"▶️ **Playing** here the song requested by {cb.message.reply_to_message.from_user.mention} via Youtube Music 😜",
         )
+        
         os.remove("final.png")
 
 # Have u read all. If read RESPECT :-)
