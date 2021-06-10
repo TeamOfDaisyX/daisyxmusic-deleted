@@ -633,7 +633,7 @@ async def play(_, message: Message):
         return await lel.delete()
 
 
-@Client.on_message(command("ytplay") & other_filters)
+@Client.on_message(filters.command("ytplay") & filters.group & ~filters.edited)
 async def ytplay(_, message: Message):
     global que
     lel = await message.reply("🔄 **Processing**")
