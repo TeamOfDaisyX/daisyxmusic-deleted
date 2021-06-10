@@ -577,13 +577,13 @@ async def play(_, message: Message):
         koyboard = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{user_id}|{query}'),
-                    InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{user_id}|{query}'),
-                    InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{user_id}|{query}'),
+                    InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{query}'),
+                    InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{query}'),
+                    InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{query}'),
                 ],
                 [
-                    InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{user_id}|{query}'),
-                    InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{user_id}|{query}'),
+                    InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}'),
+                    InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}'),
                 ],
                 [InlineKeyboardButton(text="❌", callback_data="cls")],
             ]
@@ -903,8 +903,9 @@ async def lol_cb(b, cb):
     cbd = cb.data.strip()
     chat_id = cb.message.chat.id
     typed_=cbd.split(None, 1)[1]
+    useer_id = cb.message.reply_to_message.from_user.id
     try:
-        x,useer_id,query = typed_.split("|")      
+        x,query = typed_.split("|")      
     except:
         await cb.message.edit("Song Not Found")
         return
@@ -914,6 +915,7 @@ async def lol_cb(b, cb):
     await cb.message.edit("Hang On... Player Starting")
     x-int(x)
     user_name = cb.message.reply_to_message.from_user.first_name
+    
     results = YoutubeSearch(query, max_results=5).to_dict()
     resultss=results[x]["url_suffix"]
     title=results[x]["title"][:40]
