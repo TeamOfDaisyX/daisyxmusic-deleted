@@ -138,7 +138,7 @@ async def admincache(client, message: Message):
       await message.reply("Is chat even linked")
       return
     set(
-        chid,
+        chid, 
         [
             member.user
             for member in await conchat.linked_chat.get_members(filter="administrators")
