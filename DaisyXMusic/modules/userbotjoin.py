@@ -76,7 +76,7 @@ async def bye(client, message):
     if message.from_user.id in SUDO_USERS:
         left=0
         failed=0
-        await message.reply("Assistant Leaving all chats")
+        lol = await message.reply("Assistant Leaving all chats")
         for dialog in USER.iter_dialogs():
             try:
                 await USER.leave_chat(dialog.chat.id)
@@ -85,7 +85,7 @@ async def bye(client, message):
             except:
                 failed=failed+1
                 await lol.edit(f"Assistant leaving... Left: {left} chats. Failed: {failed} chats.")
-            await asyncio.sleep(3)
+            await asyncio.sleep(0.7)
         await client.send_message(message.chat.id, f"Left {left} chats. Failed {failed} chats.")
     
     
