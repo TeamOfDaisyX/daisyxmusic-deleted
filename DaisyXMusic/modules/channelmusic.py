@@ -19,7 +19,7 @@ import json
 import os
 from os import path
 from typing import Callable
-import asyncio
+
 import aiofiles
 import aiohttp
 import ffmpeg
@@ -55,18 +55,13 @@ from DaisyXMusic.services.callsmusic import callsmusic, queues
 from DaisyXMusic.services.callsmusic.callsmusic import client as USER
 from DaisyXMusic.services.converter.converter import convert
 from DaisyXMusic.services.downloaders import youtube
-from DaisyXMusic.services.mongo_helpers import is_music_on
+
 chat_id = None
 
 
 
 @Client.on_message(filters.command(["channelplaylist","cplaylist"]) & filters.group & ~filters.edited)
 async def playlist(client, message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return  
     try:
       lel = await client.get_chat(message.chat.id)
       lol = lel.linked_chat.id
@@ -157,11 +152,6 @@ async def ee(client, message):
 @Client.on_message(filters.command(["channelplayer","cplayer"]) & filters.group & ~filters.edited)
 @authorized_users_only
 async def settings(client, message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return  
     playing = None
     try:
       lel = await client.get_chat(message.chat.id)
@@ -371,11 +361,6 @@ async def m_cb(b, cb):
 @Client.on_message(filters.command(["channelplay","cplay"])  & filters.group & ~filters.edited)
 @authorized_users_only
 async def play(_, message: Message):
-    if not await is_music_on(message.chat.id):
-        hii = await message.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return    
     global que
     lel = await message.reply("🔄 **Processing**")
 
@@ -621,11 +606,6 @@ async def play(_, message: Message):
 @Client.on_message(filters.command(["channeldplay","cdplay"]) & filters.group & ~filters.edited)
 @authorized_users_only
 async def deezer(client: Client, message_: Message):
-    if not await is_music_on(message_.chat.id):
-        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return  
     global que
     lel = await message_.reply("🔄 **Processing**")
 
@@ -758,11 +738,6 @@ async def deezer(client: Client, message_: Message):
 @Client.on_message(filters.command(["channelsplay","csplay"]) & filters.group & ~filters.edited)
 @authorized_users_only
 async def jiosaavn(client: Client, message_: Message):
-    if not await is_music_on(message_.chat.id):
-        hii = await message_.reply("**Send** /musicplayer on **to use VC music player**")
-        await asyncio.sleep(6)
-        await hii.delete()
-        return   
     global que
     lel = await message_.reply("🔄 **Processing**")
     try:
