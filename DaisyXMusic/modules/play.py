@@ -562,17 +562,20 @@ async def play(_, message: Message):
         print(query)
         await lel.edit("🎵 **Processing**")
         ydl_opts = {"format": "bestaudio[ext=m4a]"}
-        results = YoutubeSearch(query, max_results=5).to_dict()
+        try:
+          results = YoutubeSearch(query, max_results=5).to_dict()
+        except:
+          await lel.edit("Give me something to play")
         # Looks like hell. Aren't it?? FUCK OFF
         toxxt = ""
         j = 0
         useer=user_name
         while j < 5:
-            toxxt += f"Title - {results[j]['title']}\n"
-            toxxt += f"Duration - {results[j]['duration']}\n"
-            toxxt += f"Views - {results[j]['views']}\n"
-            toxxt += f"Channel - {results[j]['channel']}\n"
-            toxxt += f"https://youtube.com{results[j]['url_suffix']}\n\n"
+            toxxt += f"{j+1}) [Title - {results[j]['title']}](https://youtube.com{results[j]['url_suffix']})\n"
+            toxxt += f"   Duration - {results[j]['duration']}\n"
+            toxxt += f"   Views - {results[j]['views']}\n"
+            toxxt += f"   Channel - {results[j]['channel']}\n\n"
+            
             j += 1            
         koyboard = InlineKeyboardMarkup(
             [
@@ -952,7 +955,7 @@ async def lol_cb(b, cb):
         position = await queues.put(chat_id, file=file_path)
         qeue = que.get(chat_id)
         s_name = title
-        r_by = useer_name
+        r_by = cb.message.from_user
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
@@ -968,7 +971,7 @@ async def lol_cb(b, cb):
         que[chat_id] = []
         qeue = que.get(chat_id)
         s_name = title
-        r_by = useer_name
+        r_by = cb.message.from_user
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
