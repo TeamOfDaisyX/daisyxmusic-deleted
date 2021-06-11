@@ -610,40 +610,80 @@ async def play(_, message: Message):
         print(query)
         await lel.edit("🎵 **Processing**")
         ydl_opts = {"format": "bestaudio[ext=m4a]"}
+        
         try:
           results = YoutubeSearch(query, max_results=5).to_dict()
         except:
           await lel.edit("Give me something to play")
         # Looks like hell. Aren't it?? FUCK OFF
-        toxxt = "**Select the song you want to play**\n\n"
-        j = 0
-        useer=user_name
-        while j < 5:
-            toxxt += f"{j+1}) [Title - {results[j]['title']}](https://youtube.com{results[j]['url_suffix']})\n"
-            toxxt += f"   Duration - {results[j]['duration']}\n"
-            toxxt += f"   Views - {results[j]['views']}\n"
-            toxxt += f"   Channel - {results[j]['channel']}\n\n"
-            
-            j += 1            
-        koyboard = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{query}'),
-                    InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{query}'),
-                    InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{query}'),
-                ],
-                [
-                    InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}'),
-                    InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}'),
-                ],
-                [InlineKeyboardButton(text="❌", callback_data="cls")],
-            ]
-        )       
-        await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
-        # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
-        return
-        # Returning to pornhub
+        try:
+            toxxt = "**Select the song you want to play**\n\n"
+            j = 0
+            useer=user_name
+            while j < 5:
+                toxxt += f"{j+1}) [Title - {results[j]['title']}](https://youtube.com{results[j]['url_suffix']})\n"
+                toxxt += f"   Duration - {results[j]['duration']}\n"
+                toxxt += f"   Views - {results[j]['views']}\n"
+                toxxt += f"   Channel - {results[j]['channel']}\n\n"
 
+                j += 1            
+            koyboard = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{query}|{user_id}'),
+                        InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{query}|{user_id}'),
+                        InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{query}|{user_id}'),
+                    ],
+                    [
+                        InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}|{user_id}'),
+                        InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}|{user_id}'),
+                    ],
+                    [InlineKeyboardButton(text="❌", callback_data="cls")],
+                ]
+            )       
+            await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
+            # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
+            return
+            # Returning to pornhub
+        except:
+            await lel.edit("No Enough results to choose.. Starting direct play..")
+                        
+            # print(results)
+            try:
+                url = f"https://youtube.com{results[0]['url_suffix']}"
+                title = results[0]["title"][:40]
+                thumbnail = results[0]["thumbnails"][0]
+                thumb_name = f"thumb{title}.jpg"
+                thumb = requests.get(thumbnail, allow_redirects=True)
+                open(thumb_name, "wb").write(thumb.content)
+                duration = results[0]["duration"]
+                results[0]["url_suffix"]
+                views = results[0]["views"]
+
+            except Exception as e:
+                await lel.edit(
+                    "Song not found.Try another song or maybe spell it properly."
+                )
+                print(str(e))
+                return
+            dlurl=url
+            dlurl=dlurl.replace("youtube","youtubepp")
+            keyboard = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("📖 Playlist", callback_data="playlist"),
+                        InlineKeyboardButton("Menu ⏯ ", callback_data="menu"),
+                    ],
+                    [
+                        InlineKeyboardButton(text="🎬 YouTube", url=f"{url}"),
+                        InlineKeyboardButton(text="Download 📥", url=f"{dlurl}"),
+                    ],
+                    [InlineKeyboardButton(text="❌ Close", callback_data="cls")],
+                ]
+            )
+            requested_by = message.from_user.first_name
+            await generate_cover(requested_by, title, views, duration, thumbnail)
+            file_path = await convert(youtube.download(url))   
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
         position = await queues.put(chat_id, file=file_path)
@@ -1106,18 +1146,22 @@ async def lol_cb(b, cb):
     cbd = cb.data.strip()
     chat_id = cb.message.chat.id
     typed_=cbd.split(None, 1)[1]
-    useer_id = cb.message.reply_to_message.from_user.id
+    #useer_id = cb.message.reply_to_message.from_user.id
     try:
-        x,query = typed_.split("|")      
+        x,query,useer_id = typed_.split("|")      
     except:
         await cb.message.edit("Song Not Found")
         return
+    useer_id = int(useer_id)
     if cb.from_user.id != useer_id:
         await cb.answer("You ain't the person who requested to play the song!", show_alert=True)
         return
     await cb.message.edit("Hang On... Player Starting")
     x=int(x)
-    useer_name = cb.message.reply_to_message.from_user.first_name
+    try:
+        useer_name = cb.message.reply_to_message.from_user.first_name
+    except:
+        useer_name = cb.message.from_user.first_name
     
     results = YoutubeSearch(query, max_results=5).to_dict()
     resultss=results[x]["url_suffix"]
@@ -1162,14 +1206,17 @@ async def lol_cb(b, cb):
         position = await queues.put(chat_id, file=file_path)
         qeue = que.get(chat_id)
         s_name = title
-        r_by = cb.message.from_user
+        try:
+            r_by = cb.message.reply_to_message.from_user
+        except:
+            r_by = cb.message.from_user
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
         await cb.message.delete()
         await b.send_photo(chat_id,
             photo="final.png",
-            caption=f"#⃣ Your requested song **queued** at position {position}!",
+            caption=f"#⃣  Song requested by {r_by.mention} **queued** at position {position}!",
             reply_markup=keyboard,
         )
         os.remove("final.png")
@@ -1178,7 +1225,10 @@ async def lol_cb(b, cb):
         que[chat_id] = []
         qeue = que.get(chat_id)
         s_name = title
-        r_by = cb.message.reply_to_message.from_user
+        try:
+            r_by = cb.message.reply_to_message.from_user
+        except:
+            r_by = cb.message.from_user
         loc = file_path
         appendable = [s_name, r_by, loc]
         qeue.append(appendable)
@@ -1188,7 +1238,7 @@ async def lol_cb(b, cb):
         await b.send_photo(chat_id,
             photo="final.png",
             reply_markup=keyboard,
-            caption=f"▶️ **Playing** here the song requested by {cb.message.reply_to_message.from_user.mention} via Youtube Music 😜",
+            caption=f"▶️ **Playing** here the song requested by {r_by.mention} via Youtube Music 😜",
         )
         
         os.remove("final.png")
