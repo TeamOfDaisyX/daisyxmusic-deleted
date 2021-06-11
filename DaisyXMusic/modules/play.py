@@ -953,6 +953,14 @@ async def deezer(client: Client, message_: Message):
     except:
         await res.edit("Found Literally Nothing, You Should Work On Your English!")
         return
+    try:    
+        duuration= round(duration / 60)
+        if duuration > DURATION_LIMIT:
+            await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
+            return
+    except:
+        pass    
+    
     keyboard = InlineKeyboardMarkup(
         [
             [
@@ -1082,7 +1090,13 @@ async def jiosaavn(client: Client, message_: Message):
         await res.edit("Found Literally Nothing!, You Should Work On Your English.")
         print(str(e))
         return
-    
+    try:    
+        duuration= round(sduration / 60)
+        if duuration > DURATION_LIMIT:
+            await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
+            return
+    except:
+        pass    
     keyboard = InlineKeyboardMarkup(
         [
             [
@@ -1172,9 +1186,10 @@ async def lol_cb(b, cb):
     duration=results[x]["duration"]
     views=results[x]["views"]
     url = f"https://youtube.com{resultss}"
-    duuration=duration.replace(":",".")
+    
     try:    
-        if int(duuration) > int(DURATION_LIMIT):
+        duuration= round(duration / 60)
+        if duuration > DURATION_LIMIT:
             await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
             return
     except:
