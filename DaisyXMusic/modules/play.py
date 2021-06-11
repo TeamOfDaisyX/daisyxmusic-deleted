@@ -54,7 +54,7 @@ from DaisyXMusic.services.downloaders import youtube
 aiohttpsession = aiohttp.ClientSession()
 chat_id = None
 arq = ARQ("https://thearq.tech", ARQ_API_KEY, aiohttpsession)
-
+DISABLED_GROUPS = []
 useer ="NaN"
 def cb_admin_check(func: Callable) -> Callable:
     async def decorator(client, cb):
@@ -135,6 +135,8 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
 @Client.on_message(filters.command("playlist") & filters.group & ~filters.edited)
 async def playlist(client, message):
     global que
+    if message.chat.id in DISABLED_GROUPS:
+        return    
     queue = que.get(message.chat.id)
     if not queue:
         await message.reply_text("Player is idle")
@@ -200,6 +202,8 @@ def r_ply(type_):
 
 @Client.on_message(filters.command("current") & filters.group & ~filters.edited)
 async def ee(client, message):
+    if message.chat.id in DISABLED_GROUPS:
+        return
     queue = que.get(message.chat.id)
     stats = updated_stats(message.chat, queue)
     if stats:
@@ -211,6 +215,9 @@ async def ee(client, message):
 @Client.on_message(filters.command("player") & filters.group & ~filters.edited)
 @authorized_users_only
 async def settings(client, message):
+    if message.chat.id in DISABLED_GROUPS:
+        await message.reply("Music Player is Disabled")
+        return    
     playing = None
     chat_id = get_chat_id(message.chat)
     if chat_id in callsmusic.pytgcalls.active_calls:
@@ -226,6 +233,49 @@ async def settings(client, message):
     else:
         await message.reply("No VC instances running in this chat")
 
+
+@Client.on_message(
+    filters.command("musicplayer") & ~filters.edited & ~filters.bot & ~filters.private
+)
+@authorized_users_only
+async def hfmm(_, message):
+    global daisy_chats
+    try:
+        user_id = message.from_user.id
+    except:
+        return
+    if len(message.command) != 2:
+        await message.reply_text(
+            "I only recognize `/musicplayer on` and /musicplayer `off only`"
+        )
+        return
+    status = message.text.split(None, 1)[1]
+    message.chat.id
+    if status == "ON" or status == "on" or status == "On":
+        lel = await message.reply("`Processing...`")
+        if not message.chat.iid in DISABLED_GROUPS:
+            await lel.edit("Music Player Already Activated In This Chat")
+            return
+        DISABLED_GROUPS.remove(message.chat.id)
+        await lel.edit(
+            f"Music Player Successfully Enabled For Users In The Chat {message.chat.id}"
+        )
+
+    elif status == "OFF" or status == "off" or status == "Off":
+        lel = await message.reply("`Processing...`")
+        
+        if message.chat.iid in DISABLED_GROUPS:
+            await lel.edit("Music Player Already turned off In This Chat")
+            return
+        DISABLED_GROUPS.append(message.chat.id)
+        await lel.edit(
+            f"Music Player Successfully Deactivated For Users In The Chat {message.chat.id}"
+        )
+    else:
+        await message.reply_text(
+            "I only recognize `/musicplayer on` and /musicplayer `off only`"
+        )    
+        
 
 @Client.on_callback_query(filters.regex(pattern=r"^(playlist)$"))
 async def p_cb(b, cb):
@@ -404,6 +454,8 @@ async def m_cb(b, cb):
 async def play(_, message: Message):
     global que
     global useer
+    if message.chat.id in DISABLED_GROUPS:
+        return    
     lel = await message.reply("🔄 **Processing**")
     administrators = await get_administrators(message.chat)
     chid = message.chat.id
@@ -636,6 +688,8 @@ async def play(_, message: Message):
 @Client.on_message(filters.command("ytplay") & filters.group & ~filters.edited)
 async def ytplay(_, message: Message):
     global que
+    if message.chat.id in DISABLED_GROUPS:
+        return
     lel = await message.reply("🔄 **Processing**")
     administrators = await get_administrators(message.chat)
     chid = message.chat.id
@@ -780,6 +834,8 @@ async def ytplay(_, message: Message):
     
 @Client.on_message(filters.command("dplay") & filters.group & ~filters.edited)
 async def deezer(client: Client, message_: Message):
+    if message_.chat.id in DISABLED_GROUPS:
+        return
     global que
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
@@ -909,6 +965,8 @@ async def deezer(client: Client, message_: Message):
 @Client.on_message(filters.command("splay") & filters.group & ~filters.edited)
 async def jiosaavn(client: Client, message_: Message):
     global que
+    if message_.chat.id in DISABLED_GROUPS:
+        return    
     lel = await message_.reply("🔄 **Processing**")
     administrators = await get_administrators(message_.chat)
     chid = message_.chat.id
@@ -982,6 +1040,7 @@ async def jiosaavn(client: Client, message_: Message):
         await res.edit("Found Literally Nothing!, You Should Work On Your English.")
         print(str(e))
         return
+    
     keyboard = InlineKeyboardMarkup(
         [
             [
@@ -1067,6 +1126,10 @@ async def lol_cb(b, cb):
     duration=results[x]["duration"]
     views=results[x]["views"]
     url = f"https://youtube.com{resultss}"
+    if duration > DURATION_LIMIT:
+        await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
+        return
+    
     try:
         thumb_name = f"thumb{title}.jpg"
         thumb = requests.get(thumbnail, allow_redirects=True)
