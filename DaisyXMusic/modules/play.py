@@ -620,11 +620,13 @@ async def play(_, message: Message):
             toxxt = "**Select the song you want to play**\n\n"
             j = 0
             useer=user_name
+            emojilist = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣",]
+
             while j < 5:
-                toxxt += f"{j+1}) [Title - {results[j]['title']}](https://youtube.com{results[j]['url_suffix']})\n"
-                toxxt += f"   Duration - {results[j]['duration']}\n"
-                toxxt += f"   Views - {results[j]['views']}\n"
-                toxxt += f"   Channel - {results[j]['channel']}\n\n"
+                toxxt += f"{emojilist[j]} [Title - {results[j]['title']}](https://youtube.com{results[j]['url_suffix']})\n"
+                toxxt += f" ╚ **Duration** - {results[j]['duration']}\n"
+                toxxt += f" ╚ **Views** - {results[j]['views']}\n"
+                toxxt += f" ╚ **Channel** - {results[j]['channel']}\n\n"
 
                 j += 1            
             koyboard = InlineKeyboardMarkup(
