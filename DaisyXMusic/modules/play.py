@@ -239,7 +239,7 @@ async def settings(client, message):
 )
 @authorized_users_only
 async def hfmm(_, message):
-    global daisy_chats
+    global DISABLED_GROUPS
     try:
         user_id = message.from_user.id
     except:
@@ -253,7 +253,7 @@ async def hfmm(_, message):
     message.chat.id
     if status == "ON" or status == "on" or status == "On":
         lel = await message.reply("`Processing...`")
-        if not message.chat.iid in DISABLED_GROUPS:
+        if not message.chat.id in DISABLED_GROUPS:
             await lel.edit("Music Player Already Activated In This Chat")
             return
         DISABLED_GROUPS.remove(message.chat.id)
@@ -264,7 +264,7 @@ async def hfmm(_, message):
     elif status == "OFF" or status == "off" or status == "Off":
         lel = await message.reply("`Processing...`")
         
-        if message.chat.iid in DISABLED_GROUPS:
+        if message.chat.id in DISABLED_GROUPS:
             await lel.edit("Music Player Already turned off In This Chat")
             return
         DISABLED_GROUPS.append(message.chat.id)
@@ -1126,10 +1126,13 @@ async def lol_cb(b, cb):
     duration=results[x]["duration"]
     views=results[x]["views"]
     url = f"https://youtube.com{resultss}"
-    if duration > DURATION_LIMIT:
-        await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
-        return
-    
+    duuration=duration.replace(":",".")
+    try:    
+        if int(duuration) > int(DURATION_LIMIT):
+            await cb.message.edit(f"Music longer than {DURATION_LIMIT}min are not allowed to play")
+            return
+    except:
+        pass
     try:
         thumb_name = f"thumb{title}.jpg"
         thumb = requests.get(thumbnail, allow_redirects=True)
