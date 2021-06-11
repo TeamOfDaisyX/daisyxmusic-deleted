@@ -96,6 +96,7 @@ channel is also can be used instead of c ( /cplay = /channelplay )
 f"""
 **=>> More tools 🧑‍🔧**
 
+- /musicplayer [on/off]: Enable/Disable Music player
 - /admincache: Updates admin info of your group. Try if bot isn't recognize admin
 - /userbotjoin: Invite @{ASSISTANT_NAME} Userbot to your chat
 
