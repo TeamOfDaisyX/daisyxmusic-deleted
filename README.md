@@ -72,6 +72,7 @@ $ python(3) -m DaisyXMusic
 - `/userbotjoin` - invite assistant to your chat
 - `/userbotleave` - remove assistant from your chat
 - `/admincache` - Refresh admin list
+- `/musicplayer [on/off]` - Enable/Disable Music Player
 
 ### Commands for Channel Music Play 🛠
 For linked group admins only:
